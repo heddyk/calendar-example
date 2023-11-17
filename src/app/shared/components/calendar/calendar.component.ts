@@ -1,15 +1,7 @@
 import { DatePipe, NgClass, UpperCasePipe } from '@angular/common'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core'
-
-const WEEKDAYS = [
-  { long: 'Domingo', narrow: 'Dom' },
-  { long: 'Segunda', narrow: 'Seg' },
-  { long: 'Terça', narrow: 'Ter' },
-  { long: 'Quarta', narrow: 'Qua' },
-  { long: 'Quinta', narrow: 'Qui' },
-  { long: 'Sexta', narrow: 'Sex' },
-  { long: 'Sábado', narrow: 'Sáb' },
-]
+import { WEEKDAYS } from '@core/constants/weekdays'
+import { addDays, firstDayOfWeek, isBefore, isSameDate, lastDayOfWeek } from '@core/utils'
 
 interface DayOfCalendar {
   date: Date
@@ -84,73 +76,26 @@ export class EECalendarComponent {
     const firstDayOfTheMonth = new Date(year, month, 1)
     const lastDayOfTheMonth = new Date(year, month + 1, 0)
 
-    const firstDayOfTheCalendar = this.firstDayOfWeek(firstDayOfTheMonth)
-    const lastDayOfTheCalendar = this.lastDayOfWeek(lastDayOfTheMonth)
+    const firstDayOfTheCalendar = firstDayOfWeek(firstDayOfTheMonth)
+    const lastDayOfTheCalendar = lastDayOfWeek(lastDayOfTheMonth)
 
     let temp = new Date(+firstDayOfTheCalendar)
     const days = [new Date(+temp)]
 
-    while (this.isBefore(temp, lastDayOfTheCalendar) && days.length < 42) {
-      temp = this.addDays(temp, 1)
+    while (isBefore(temp, lastDayOfTheCalendar) && days.length < 42) {
+      temp = addDays(temp, 1)
       days.push(new Date(+temp))
     }
 
     while (days.length < 42) {
-      temp = this.addDays(temp, 1)
+      temp = addDays(temp, 1)
       days.push(new Date(+temp))
     }
 
     return days.map((d) => ({
       date: d,
       isCurrentMonth: d.getMonth() === month,
-      isToday: this.isSameDate(d, new Date()),
+      isToday: isSameDate(d, new Date()),
     }))
-  }
-
-  firstDayOfWeek(date: Date): Date {
-    /*
-      0 - Sunday
-      1 - Monday
-    */
-    const weekStartsOn = 0
-    const day = date.getDay()
-    const diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn
-
-    date.setDate(date.getDate() - diff)
-    date.setHours(0, 0, 0, 0)
-    return date
-  }
-
-  lastDayOfWeek(date: Date): Date {
-    /*
-      0 - Sunday
-      1 - Monday
-    */
-    const weekStartsOn = 0
-    const day = date.getDay()
-    const diff = (day < weekStartsOn ? -7 : 0) + 6 - (day - weekStartsOn)
-
-    date.setDate(date.getDate() + diff)
-    date.setHours(0, 0, 0, 0)
-    return date
-  }
-
-  addDays(date: Date, amount: number): Date {
-    if (!amount) return date
-
-    date.setDate(date.getDate() + amount)
-    return date
-  }
-
-  isBefore(date: Date, dateToCompare: Date): boolean {
-    return +date < +dateToCompare
-  }
-
-  isSameDate(date1: Date, date2: Date): boolean {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    )
   }
 }
