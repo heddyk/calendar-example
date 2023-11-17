@@ -2,3 +2,25 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *:active, *:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+input {
+  color-scheme: light;
+}
+
+.dark input {
+  color-scheme: dark;
+}

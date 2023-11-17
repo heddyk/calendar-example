@@ -1,0 +1,147 @@
+<div class="lg:flex lg:h-full lg:flex-col p-4">
+  <header class="flex items-center justify-between border-b border-gray-200 px-6 py-4 lg:flex-none">
+    <!-- title month view -->
+    <strong class="text-base font-semibold leading-6 text-gray-900">
+      {{ title | uppercase }}
+    </strong>
+
+    <div class="flex items-center">
+      <!-- change month -->
+      <div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
+        <button
+          type="button"
+          class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pr-0 md:hover:bg-gray-50"
+          (click)="previousMonth()">
+          <span class="sr-only">Previous month</span>
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path
+              fill-rule="evenodd"
+              d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+              clip-rule="evenodd" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block"
+          (click)="returnCurrentMonth()">
+          Today
+        </button>
+        <span class="relative -mx-px h-5 w-px bg-gray-300 md:hidden"></span>
+        <button
+          type="button"
+          class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pl-0 md:hover:bg-gray-50"
+          (click)="nextMonth()">
+          <span class="sr-only">Next month</span>
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path
+              fill-rule="evenodd"
+              d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+              clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Toggle view calendar -->
+      <div class="hidden md:ml-4 md:flex md:items-center">
+        <div class="relative">
+          <button
+            type="button"
+            class="flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            id="menu-button"
+            aria-expanded="false"
+            aria-haspopup="true">
+            Month view
+            <svg
+              class="-mr-1 h-5 w-5 text-gray-400"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true">
+              <path
+                fill-rule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="ml-6 h-6 w-px bg-gray-300"></div>
+
+        <!-- add event in calendar -->
+        <button
+          type="button"
+          class="ml-6 rounded-md bg-fuchsia-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-fuchsia-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-500">
+          Add event
+        </button>
+      </div>
+
+      <!-- Options for the mobile -->
+      <div class="relative ml-6 md:hidden">
+        <button
+          type="button"
+          class="-mx-2 flex items-center rounded-full border border-transparent p-2 text-gray-400 hover:text-gray-500"
+          id="menu-0-button"
+          aria-expanded="false"
+          aria-haspopup="true">
+          <span class="sr-only">Open menu</span>
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path
+              d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col">
+    <div
+      class="grid grid-cols-7 gap-px border-b border-gray-300 bg-gray-200 text-center text-xs font-semibold leading-6 text-gray-700 lg:flex-none">
+      @for (week of weekdays; track $index) {
+        <div class="flex justify-center bg-white py-2">
+          <span class="inline md:hidden">{{ week.narrow }}</span>
+          <span class="hidden md:inline">{{ week.long }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="flex bg-gray-200 text-xs leading-6 text-gray-700 lg:flex-auto">
+      <!-- desktop -->
+      <div class="hidden w-full lg:grid lg:grid-cols-7 lg:grid-rows-6 lg:gap-px">
+        @for (day of days; track day.date) {
+          <div
+            class="relative px-3 py-2"
+            [ngClass]="{
+              'bg-gray-100 text-gray-500': !day.isCurrentMonth,
+              'bg-white': day.isCurrentMonth
+            }">
+            <time
+              [dateTime]="day.date | date: 'yyyy-MM-dd'"
+              [ngClass]="{
+                'flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-600 font-semibold text-white':
+                  day.isToday
+              }">
+              {{ day.date | date: 'dd' }}
+            </time>
+          </div>
+        }
+      </div>
+
+      <!-- mobile -->
+      <div class="isolate grid w-full grid-cols-7 grid-rows-6 gap-px lg:hidden">
+        @for (day of days; track day.date) {
+          <button
+            type="button"
+            class="flex h-14 flex-col px-3 py-2 focus:z-10 hover:bg-gray-200"
+            [ngClass]="{
+              'bg-gray-100 text-gray-500': !day.isCurrentMonth,
+              'bg-white text-gray-900': day.isCurrentMonth,
+              'text-fuchsia-600': day.isToday
+            }">
+            <time class="ml-auto" [dateTime]="day.date | date: 'yyyy-MM-dd'">
+              {{ day.date | date: 'dd' }}
+            </time>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

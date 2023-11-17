@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core'
+import { RouterOutlet } from '@angular/router'
 
 @Component({
-  selector: 'app-root',
+  selector: 'ee-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [RouterOutlet],
+  host: {
+    class: 'block w-screen h-screen',
+  },
+  template: `
+    <router-outlet></router-outlet>
+  `,
 })
-export class AppComponent {
-  title = 'ee-calendar';
-}
+export class AppComponent {}
