@@ -1,7 +1,7 @@
 <div class="lg:flex lg:h-full lg:flex-col p-4">
-  <header class="flex items-center justify-between border-b border-gray-200 px-6 py-4 lg:flex-none">
+  <header class="flex items-center justify-between border-b border-gray-200 py-4 lg:flex-none">
     <!-- title month view -->
-    <strong class="text-base font-semibold leading-6 text-gray-900">
+    <strong class="text-lg sm:text-2xl font-semibold leading-6 text-gray-900">
       {{ title | uppercase }}
     </strong>
 
@@ -23,7 +23,7 @@
           type="button"
           class="hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block"
           (click)="returnCurrentMonth()">
-          Today
+          Hoje
         </button>
         <span class="relative -mx-px h-5 w-px bg-gray-300 md:hidden"></span>
         <button
@@ -102,11 +102,23 @@
     </div>
 
     <div class="flex bg-gray-200 text-xs leading-6 text-gray-700 lg:flex-auto">
-      <!-- desktop -->
-      <div class="hidden w-full lg:grid lg:grid-cols-7 lg:grid-rows-6 lg:gap-px">
+      <div class="grid w-full grid-cols-7 grid-rows-6 gap-px">
         @for (day of days; track day.date) {
+          <button
+            type="button"
+            class="flex flex-col lg:hidden h-14 px-3 py-2 focus:z-10 hover:bg-gray-200"
+            [ngClass]="{
+              'bg-gray-100 text-gray-500': !day.isCurrentMonth,
+              'bg-white text-gray-900': day.isCurrentMonth,
+              'text-fuchsia-600': day.isToday
+            }">
+            <time class="ml-auto" [dateTime]="day.date | date: 'yyyy-MM-dd'">
+              {{ day.date | date: 'dd' }}
+            </time>
+          </button>
+
           <div
-            class="relative px-3 py-2"
+            class="relative px-3 py-2 hidden lg:block"
             [ngClass]="{
               'bg-gray-100 text-gray-500': !day.isCurrentMonth,
               'bg-white': day.isCurrentMonth
@@ -120,24 +132,6 @@
               {{ day.date | date: 'dd' }}
             </time>
           </div>
-        }
-      </div>
-
-      <!-- mobile -->
-      <div class="isolate grid w-full grid-cols-7 grid-rows-6 gap-px lg:hidden">
-        @for (day of days; track day.date) {
-          <button
-            type="button"
-            class="flex h-14 flex-col px-3 py-2 focus:z-10 hover:bg-gray-200"
-            [ngClass]="{
-              'bg-gray-100 text-gray-500': !day.isCurrentMonth,
-              'bg-white text-gray-900': day.isCurrentMonth,
-              'text-fuchsia-600': day.isToday
-            }">
-            <time class="ml-auto" [dateTime]="day.date | date: 'yyyy-MM-dd'">
-              {{ day.date | date: 'dd' }}
-            </time>
-          </button>
         }
       </div>
     </div>
