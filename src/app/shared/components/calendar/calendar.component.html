@@ -1,4 +1,4 @@
-<div class="h-full flex flex-col p-4">
+<div class="h-full w-full flex flex-col p-4">
   <header class="flex items-center justify-between border-b border-gray-200 py-4 lg:flex-none">
     <!-- title month view -->
     <strong class="text-lg sm:text-2xl font-semibold leading-6 text-gray-900">
@@ -108,7 +108,7 @@
 
   @switch (currentView) {
     @case ('year') {
-      <ee-year-view />
+      <ee-year-view [activeDate]="activeDate" />
     }
 
     @case ('month') {

@@ -1,0 +1,40 @@
+<div
+  class="w-full mx-auto grid grid-cols-1 gap-x-8 gap-y-16 px-4 py-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+  @for (month of _months; track month.description) {
+    <section class="text-center">
+      <h2 class="text-sm font-semibold text-gray-900">{{ month.description | titlecase }}</h2>
+
+      <div class="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-500">
+        @for (week of _weekdays; track week.narrow) {
+          <div>{{ week.narrow }}</div>
+        }
+      </div>
+
+      <div
+        class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
+        @for (day of month.days; track day.date; let indice = $index) {
+          <button
+            type="button"
+            class="py-1.5 hover:bg-gray-100 focus:z-10"
+            [ngClass]="{
+              'bg-white text-gray-900': day.isCurrentMonth,
+              'bg-gray-50 text-gray-400': !day.isCurrentMonth,
+              'rounded-tl-lg': indice === 0,
+              'rounded-tr-lg': indice === 6,
+              'rounded-bl-lg': indice === 35,
+              'rounded-br-lg': indice === 41
+            }">
+            <time
+              datetime="2021-12-27"
+              class="mx-auto flex h-7 w-7 items-center justify-center rounded-full"
+              [ngClass]="{
+                'bg-indigo-600 font-semibold text-white': day.isToday
+              }">
+              {{ day.date | date: 'dd' }}
+            </time>
+          </button>
+        }
+      </div>
+    </section>
+  }
+</div>

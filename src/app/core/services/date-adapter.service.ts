@@ -35,6 +35,11 @@ export class DateAdapterService {
     return Array.from({ length: 12 }, (_, i) => this._format(dtf, new Date(2023, i, 1)))
   }
 
+  getMonthName(date: Date, style: 'long' | 'short' | 'narrow'): string {
+    const dtf = new Intl.DateTimeFormat(this._locale, { month: style, timeZone: 'utc' })
+    return this._format(dtf, date)
+  }
+
   getDateNames(): string[] {
     const dtf = new Intl.DateTimeFormat(this._locale, { day: 'numeric', timeZone: 'utc' })
     return Array.from({ length: 31 }, (_, i) => this._format(dtf, new Date(2023, 0, i + 1)))
