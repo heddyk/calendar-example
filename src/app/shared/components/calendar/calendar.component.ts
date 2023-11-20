@@ -53,7 +53,7 @@ export class CalendarComponent implements AfterContentInit {
 
   ngAfterContentInit(): void {
     this.activeDate = this._dateAdapterService.today()
-    this.currentView = 'year'
+    this.currentView = 'day'
   }
 
   previous() {
