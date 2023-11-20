@@ -11,6 +11,7 @@ import { DayViewComponent } from './day-view.component'
 import { MonthViewComponent } from './month-view.component'
 import { WeekViewComponent } from './week-view.component'
 import { YearViewComponent } from './year-view.component'
+import { CdkMenuTrigger, CdkMenu, CdkMenuItem } from '@angular/cdk/menu'
 
 type CalendarView = 'day' | 'week' | 'month' | 'year'
 
@@ -24,6 +25,10 @@ type CalendarView = 'day' | 'week' | 'month' | 'year'
     MonthViewComponent,
     WeekViewComponent,
     YearViewComponent,
+
+    CdkMenuTrigger,
+    CdkMenu,
+    CdkMenuItem,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'calendar.component.html',
@@ -95,5 +100,9 @@ export class CalendarComponent implements AfterContentInit {
   backViewToday() {
     this.activeDate = this._dateAdapterService.today()
     this._changeDetectorRef.markForCheck()
+  }
+
+  changeView(value: CalendarView) {
+    this.currentView = value
   }
 }
