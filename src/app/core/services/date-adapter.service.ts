@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core'
 
+const ISO_8601_REGEX =
+  /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|(?:(?:\+|-)\d{2}:\d{2}))?)?$/
+
 @Injectable({ providedIn: 'root' })
 export class DateAdapterService {
   private _locale: string = 'pt-BR'
@@ -27,30 +30,9 @@ export class DateAdapterService {
     return date.getDay()
   }
 
-  getMonthNames(): {
-    long: string
-    short: string
-    narrow: string
-    numeric: string
-  }[] {
-    return Array.from({ length: 12 }, (_, i) => ({
-      long: this._format(
-        new Intl.DateTimeFormat(this._locale, { month: 'long', timeZone: 'utc' }),
-        new Date(2023, i, 1),
-      ),
-      short: this._format(
-        new Intl.DateTimeFormat(this._locale, { month: 'short', timeZone: 'utc' }),
-        new Date(2023, i, 1),
-      ),
-      narrow: this._format(
-        new Intl.DateTimeFormat(this._locale, { month: 'narrow', timeZone: 'utc' }),
-        new Date(2023, i, 1),
-      ),
-      numeric: this._format(
-        new Intl.DateTimeFormat(this._locale, { month: 'numeric', timeZone: 'utc' }),
-        new Date(2023, i, 1),
-      ),
-    }))
+  getMonthNames(style: 'long' | 'short' | 'narrow'): string[] {
+    const dtf = new Intl.DateTimeFormat(this._locale, { month: style, timeZone: 'utc' })
+    return Array.from({ length: 12 }, (_, i) => this._format(dtf, new Date(2023, i, 1)))
   }
 
   getDateNames(): string[] {
@@ -58,21 +40,9 @@ export class DateAdapterService {
     return Array.from({ length: 31 }, (_, i) => this._format(dtf, new Date(2023, 0, i + 1)))
   }
 
-  getDayOfWeekNames(): { long: string; short: string; narrow: string }[] {
-    return Array.from({ length: 7 }, (_, i) => ({
-      long: this._format(
-        new Intl.DateTimeFormat(this._locale, { weekday: 'long', timeZone: 'utc' }),
-        new Date(2023, 0, i + 1),
-      ),
-      short: this._format(
-        new Intl.DateTimeFormat(this._locale, { weekday: 'short', timeZone: 'utc' }),
-        new Date(2023, 0, i + 1),
-      ),
-      narrow: this._format(
-        new Intl.DateTimeFormat(this._locale, { weekday: 'narrow', timeZone: 'utc' }),
-        new Date(2023, 0, i + 1),
-      ),
-    }))
+  getDayOfWeekNames(style: 'long' | 'short' | 'narrow'): string[] {
+    const dtf = new Intl.DateTimeFormat(this._locale, { weekday: style, timeZone: 'utc' })
+    return Array.from({ length: 7 }, (_, i) => this._format(dtf, new Date(2023, 0, i + 1)))
   }
 
   getYearName(date: Date): string {
@@ -129,6 +99,10 @@ export class DateAdapterService {
     return this.addMonths(date, years * 12)
   }
 
+  subYears(date: Date | number | string, years: number): Date {
+    return this.addYears(date, -years)
+  }
+
   addMonths(date: Date | number | string, months: number): Date {
     const _date = this.parse(date)
 
@@ -148,6 +122,10 @@ export class DateAdapterService {
     return _date
   }
 
+  subMonths(date: Date | number | string, months: number): Date {
+    return this.addMonths(date, -months)
+  }
+
   addDays(date: Date | number | string, days: number): Date {
     const _date = this.parse(date)
 
@@ -156,6 +134,10 @@ export class DateAdapterService {
     _date.setDate(_date.getDate() + days)
 
     return _date
+  }
+
+  subDays(date: Date | number | string, days: number): Date {
+    return this.addDays(date, -days)
   }
 
   isDateInstance(date: any): boolean {
@@ -243,6 +225,29 @@ export class DateAdapterService {
       this.getMonth(first) - this.getMonth(second) ||
       this.getDay(first) - this.getDay(second)
     )
+  }
+
+  deserialize(value: any): Date | null {
+    if (!value) {
+      return null
+    }
+
+    if (typeof value === 'string' && ISO_8601_REGEX.test(value)) {
+      const date = new Date(value)
+      if (this.isValid(date)) {
+        return date
+      }
+    }
+
+    if (value == null || (this.isDateInstance(value) && this.isValid(value))) {
+      return value
+    }
+
+    return new Date(NaN)
+  }
+
+  getValidDateOrNull(obj: unknown): Date | null {
+    return this.isDateInstance(obj) && this.isValid(obj) ? (obj as Date) : null
   }
 
   private _createDate(year: number, month: number, date: number) {

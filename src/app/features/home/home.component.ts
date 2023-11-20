@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { EECalendarComponent } from '@shared/components/calendar/calendar.component'
+import { CalendarComponent } from '@shared/components/calendar/calendar.component'
 
 @Component({
   selector: 'ee-home',
   standalone: true,
-  imports: [EECalendarComponent],
+  imports: [CalendarComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'block w-full h-full',

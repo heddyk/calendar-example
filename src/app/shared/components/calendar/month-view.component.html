@@ -1,0 +1,45 @@
+<div
+  class="grid grid-cols-7 gap-px border-b border-gray-300 bg-gray-200 text-center text-xs font-semibold leading-6 text-gray-700 lg:flex-none">
+  @for (week of _weekdays; track $index) {
+    <div class="flex justify-center bg-white py-2">
+      <span class="inline sm:hidden">{{ week.narrow | titlecase }}</span>
+      <span class="hidden sm:inline md:hidden">{{ week.short | titlecase }}</span>
+      <span class="hidden md:inline">{{ week.long | titlecase }}</span>
+    </div>
+  }
+</div>
+
+<div class="flex bg-gray-200 text-xs leading-6 text-gray-700 lg:flex-auto">
+  <div class="isolate grid w-full grid-cols-7 grid-rows-6 gap-px">
+    @for (day of _days; track day.date) {
+      <button
+        type="button"
+        class="flex flex-col lg:hidden h-14 px-3 py-2 focus:z-10 hover:bg-gray-200"
+        [ngClass]="{
+          'bg-gray-100 text-gray-500': !day.isCurrentMonth,
+          'bg-white text-gray-900': day.isCurrentMonth,
+          'text-fuchsia-600': day.isToday
+        }">
+        <time class="ml-auto" [dateTime]="day.date | date: 'yyyy-MM-dd'">
+          {{ day.date | date: 'dd' }}
+        </time>
+      </button>
+
+      <div
+        class="relative px-3 py-2 hidden lg:block"
+        [ngClass]="{
+          'bg-gray-100 text-gray-500': !day.isCurrentMonth,
+          'bg-white': day.isCurrentMonth
+        }">
+        <time
+          [dateTime]="day.date | date: 'yyyy-MM-dd'"
+          [ngClass]="{
+            'flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-600 font-semibold text-white':
+              day.isToday
+          }">
+          {{ day.date | date: 'dd' }}
+        </time>
+      </div>
+    }
+  </div>
+</div>
