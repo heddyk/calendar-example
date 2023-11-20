@@ -1,7 +1,13 @@
 import { DatePipe, NgClass, TitleCasePipe } from '@angular/common'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, inject } from '@angular/core'
-import { DayOfCalendar } from '@core/models/day-of-calendar'
 import { DateAdapterService } from '@core/services/date-adapter.service'
+
+interface DayOfCalendar {
+  date: Date
+  isCurrentMonth: boolean
+  isSelected?: boolean
+  isToday?: boolean
+}
 
 @Component({
   selector: 'ee-month-view',

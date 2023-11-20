@@ -37,6 +37,7 @@ export class CalendarComponent implements AfterContentInit {
   }
   set activeDate(value: Date) {
     this._activeDate = this._dateAdapterService.clone(value)
+    console.log('Data alterada =>', this._activeDate)
     this._changeDetectorRef.markForCheck()
   }
   private _activeDate: Date
@@ -52,7 +53,7 @@ export class CalendarComponent implements AfterContentInit {
 
   ngAfterContentInit(): void {
     this.activeDate = this._dateAdapterService.today()
-    this.currentView = 'month'
+    this.currentView = 'week'
   }
 
   previous() {
