@@ -2,7 +2,12 @@
   <header class="flex items-center justify-between border-b border-gray-200 py-4 lg:flex-none">
     <!-- title month view -->
     <strong class="text-lg sm:text-2xl font-semibold leading-6 text-gray-900">
-      {{ title | titlecase }}
+      <span class="inline sm:hidden">
+        {{ months[currentMonth].short + ' ' + currentYear | titlecase }}
+      </span>
+      <span class="hidden sm:inline">
+        {{ months[currentMonth].long + ' ' + currentYear | titlecase }}
+      </span>
     </strong>
 
     <div class="flex items-center">

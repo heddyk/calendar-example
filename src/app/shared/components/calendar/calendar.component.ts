@@ -20,7 +20,6 @@ export class EECalendarComponent {
   private readonly _changeDetectorRef = inject(ChangeDetectorRef)
   private readonly _dateAdapterService = inject(DateAdapterService)
 
-  title: string
   days: DayOfCalendar[] = []
   selectedDay = this.days.find((day) => day.isSelected)
 
@@ -54,7 +53,7 @@ export class EECalendarComponent {
   createCalendar(month: number, year: number) {
     this.currentMonth = month
     this.currentYear = year
-    this.title = `${this.months[month].long} ${year}`
+
     this.days = [...this.getDaysForCalendarMonth(month, year)]
     this._changeDetectorRef.markForCheck()
   }
