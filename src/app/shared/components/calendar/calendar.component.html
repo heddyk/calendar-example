@@ -2,7 +2,7 @@
   <header class="flex items-center justify-between border-b border-gray-200 py-4 lg:flex-none">
     <!-- title month view -->
     <strong class="text-lg sm:text-2xl font-semibold leading-6 text-gray-900">
-      {{ title | uppercase }}
+      {{ title | titlecase }}
     </strong>
 
     <div class="flex items-center">
@@ -95,8 +95,9 @@
       class="grid grid-cols-7 gap-px border-b border-gray-300 bg-gray-200 text-center text-xs font-semibold leading-6 text-gray-700 lg:flex-none">
       @for (week of weekdays; track $index) {
         <div class="flex justify-center bg-white py-2">
-          <span class="inline md:hidden">{{ week.narrow }}</span>
-          <span class="hidden md:inline">{{ week.long }}</span>
+          <span class="inline sm:hidden">{{ week.narrow | titlecase }}</span>
+          <span class="hidden sm:inline md:hidden">{{ week.short | titlecase }}</span>
+          <span class="hidden md:inline">{{ week.long | titlecase }}</span>
         </div>
       }
     </div>

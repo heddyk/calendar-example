@@ -1,7 +1,6 @@
-import { DatePipe, NgClass, UpperCasePipe } from '@angular/common'
+import { DatePipe, NgClass, TitleCasePipe, UpperCasePipe } from '@angular/common'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core'
-import { WEEKDAYS } from '@core/constants/weekdays'
-import { addDays, firstDayOfWeek, isBefore, isSameDate, lastDayOfWeek } from '@core/utils'
+import { DateAdapterService } from '@core/services/date-adapter.service'
 
 interface DayOfCalendar {
   date: Date
@@ -13,27 +12,26 @@ interface DayOfCalendar {
 @Component({
   selector: 'ee-calendar',
   standalone: true,
-  imports: [UpperCasePipe, DatePipe, NgClass],
+  imports: [UpperCasePipe, DatePipe, NgClass, TitleCasePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'calendar.component.html',
 })
 export class EECalendarComponent {
   private readonly _changeDetectorRef = inject(ChangeDetectorRef)
+  private readonly _dateAdapterService = inject(DateAdapterService)
 
   title: string
   days: DayOfCalendar[] = []
   selectedDay = this.days.find((day) => day.isSelected)
-  today = new Date()
+
+  today = this._dateAdapterService.today()
   currentMonth = this.today.getMonth()
   currentYear = this.today.getFullYear()
-  weekdays: { long: string; narrow: string }[] = WEEKDAYS
-  months = this.getAllMonths()
+
+  weekdays = this._dateAdapterService.getDayOfWeekNames()
+  months = this._dateAdapterService.getMonthNames()
 
   constructor() {
-    this.init()
-  }
-
-  init() {
     this.createCalendar(this.currentMonth, this.currentYear)
   }
 
@@ -56,46 +54,28 @@ export class EECalendarComponent {
   createCalendar(month: number, year: number) {
     this.currentMonth = month
     this.currentYear = year
-    this.title = `${this.months[month]} ${year}`
+    this.title = `${this.months[month].long} ${year}`
     this.days = [...this.getDaysForCalendarMonth(month, year)]
     this._changeDetectorRef.markForCheck()
   }
 
-  getAllMonths(
-    format: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow' = 'long',
-    locale: string = 'pt-BR',
-  ) {
-    return Array.from({ length: 12 }, (_, i) => {
-      return new Intl.DateTimeFormat(locale, { month: format }).format(
-        new Date(this.currentYear, i),
-      )
-    })
-  }
-
   getDaysForCalendarMonth(month: number, year: number): DayOfCalendar[] {
     const firstDayOfTheMonth = new Date(year, month, 1)
-    const lastDayOfTheMonth = new Date(year, month + 1, 0)
 
-    const firstDayOfTheCalendar = firstDayOfWeek(firstDayOfTheMonth)
-    const lastDayOfTheCalendar = lastDayOfWeek(lastDayOfTheMonth)
+    const firstDayOfTheCalendar = this._dateAdapterService.firstDayOfWeek(firstDayOfTheMonth)
 
-    let temp = new Date(+firstDayOfTheCalendar)
-    const days = [new Date(+temp)]
-
-    while (isBefore(temp, lastDayOfTheCalendar) && days.length < 42) {
-      temp = addDays(temp, 1)
-      days.push(new Date(+temp))
-    }
+    let temp = this._dateAdapterService.clone(+firstDayOfTheCalendar)
+    const days = [this._dateAdapterService.clone(+temp)]
 
     while (days.length < 42) {
-      temp = addDays(temp, 1)
-      days.push(new Date(+temp))
+      temp = this._dateAdapterService.addDays(+temp, 1)
+      days.push(this._dateAdapterService.clone(+temp))
     }
 
     return days.map((d) => ({
       date: d,
       isCurrentMonth: d.getMonth() === month,
-      isToday: isSameDate(d, new Date()),
+      isToday: this._dateAdapterService.isToday(d),
     }))
   }
 }
