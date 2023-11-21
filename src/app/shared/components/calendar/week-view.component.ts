@@ -1,5 +1,6 @@
 import { DatePipe, NgClass } from '@angular/common'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, inject } from '@angular/core'
+import { Event } from '@core/models/event'
 import { DateAdapterService } from '@core/services/date-adapter.service'
 
 interface DayOfCalendar {
@@ -36,6 +37,15 @@ export class WeekViewComponent {
     this._init()
   }
   private _activeDate: Date
+
+  @Input()
+  get events(): Event[] {
+    return this._events
+  }
+  set events(value: Event[]) {
+    this._events = value
+  }
+  private _events: Event[]
 
   _days: DayOfCalendar[]
 

@@ -1,5 +1,6 @@
 import { DatePipe, NgClass, TitleCasePipe } from '@angular/common'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, inject } from '@angular/core'
+import { Event } from '@core/models/event'
 import { DateAdapterService } from '@core/services/date-adapter.service'
 
 interface DayOfCalendar {
@@ -7,6 +8,7 @@ interface DayOfCalendar {
   isCurrentMonth: boolean
   isSelected?: boolean
   isToday?: boolean
+  events: Event[]
 }
 
 @Component({
@@ -42,6 +44,16 @@ export class MonthViewComponent {
   }
   private _activeDate: Date
 
+  @Input()
+  get events(): Event[] {
+    return this._events
+  }
+  set events(value: Event[]) {
+    this._events = value
+    this._setEvents(value)
+  }
+  private _events: Event[]
+
   _days: DayOfCalendar[]
   _weekdays: { long: string; short: string; narrow: string }[]
 
@@ -49,6 +61,13 @@ export class MonthViewComponent {
     this._initWeekdays()
     this._createCalendar()
     this._changeDetectorRef.markForCheck()
+  }
+
+  private _setEvents(events: Event[]) {
+    this._days = this._days.map((d) => ({
+      ...d,
+      events: events.filter((e) => this._dateAdapterService.isSameDay(d.date, e.startAt)),
+    }))
   }
 
   private _initWeekdays() {
@@ -83,6 +102,7 @@ export class MonthViewComponent {
       date: d,
       isCurrentMonth: d.getMonth() === month,
       isToday: this._dateAdapterService.isToday(d),
+      events: [],
     }))
   }
 

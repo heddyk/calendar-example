@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, inject } from '@angular/core'
+import { Event } from '@core/models/event'
 import { DateAdapterService } from '@core/services/date-adapter.service'
 
 @Component({
@@ -27,4 +28,13 @@ export class DayViewComponent {
     this._activeDate = this._dateAdapterService.clone(validDate)
   }
   private _activeDate: Date
+
+  @Input()
+  get events(): Event[] {
+    return this._events
+  }
+  set events(value: Event[]) {
+    this._events = value
+  }
+  private _events: Event[]
 }

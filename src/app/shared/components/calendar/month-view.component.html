@@ -23,6 +23,14 @@
         <time class="ml-auto" [dateTime]="day.date | date: 'yyyy-MM-dd'">
           {{ day.date | date: 'dd' }}
         </time>
+
+        @if (day.events.length > 0) {
+          <span class="-mx-0.5 mt-auto flex space-x-1">
+            @for (event of day.events; track event.id) {
+              <span class="mb-1 h-1.5 w-1.5 rounded-full bg-gray-400"></span>
+            }
+          </span>
+        }
       </button>
 
       <div
@@ -39,6 +47,30 @@
           }">
           {{ day.date | date: 'dd' }}
         </time>
+
+        @if (day.events.length > 0) {
+          <ol class="mt-2">
+            @for (event of day.events.slice(0, 2); track event.id) {
+              <li>
+                <a class="group flex">
+                  <p
+                    class="flex-auto truncate font-medium text-gray-900 group-hover:text-indigo-600">
+                    {{ event.title }}
+                  </p>
+                  <time
+                    [dateTime]="event.startAt"
+                    class="ml-3 hidden flex-none text-gray-500 group-hover:text-indigo-600 lg:block">
+                    {{ event.startAt | date: 'HH:mm' }}
+                  </time>
+                </a>
+              </li>
+            }
+
+            @if (day.events.length > 2) {
+              <li class="text-gray-500">+ {{ day.events.length - 2 }} more</li>
+            }
+          </ol>
+        }
       </div>
     }
   </div>

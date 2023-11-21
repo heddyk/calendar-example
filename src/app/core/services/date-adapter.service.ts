@@ -100,6 +100,14 @@ export class DateAdapterService {
     return this._format(dtf, date)
   }
 
+  toIso8601(date: Date): string {
+    return [
+      date.getUTCFullYear(),
+      this._2digit(date.getUTCMonth() + 1),
+      this._2digit(date.getUTCDate()),
+    ].join('-')
+  }
+
   addYears(date: Date | number | string, years: number): Date {
     return this.addMonths(date, years * 12)
   }
@@ -165,14 +173,14 @@ export class DateAdapterService {
   isEqual(first: Date | number | string, second: Date | number | string): boolean {
     const date1 = this.parse(first)
     const date2 = this.parse(second)
-    return +date1 == +date2
+    return date1.getTime() == date2.getTime()
   }
 
   isSameDay(first: Date | number | string, second: Date | number | string): boolean {
     const firstStartOfDay = this.startOfDay(first)
     const secondStartOfDay = this.startOfDay(second)
 
-    return +firstStartOfDay === +secondStartOfDay
+    return firstStartOfDay.getTime() == secondStartOfDay.getTime()
   }
 
   isToday(date: Date | number | string): boolean {
@@ -253,6 +261,10 @@ export class DateAdapterService {
 
   getValidDateOrNull(obj: unknown): Date | null {
     return this.isDateInstance(obj) && this.isValid(obj) ? (obj as Date) : null
+  }
+
+  private _2digit(n: number) {
+    return ('00' + n).slice(-2)
   }
 
   private _createDate(year: number, month: number, date: number) {

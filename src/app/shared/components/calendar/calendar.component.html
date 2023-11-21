@@ -156,19 +156,19 @@
 
   @switch (currentView) {
     @case ('year') {
-      <ee-year-view [activeDate]="activeDate" />
+      <ee-year-view [activeDate]="activeDate" [events]="events()" />
     }
 
     @case ('month') {
-      <ee-month-view [activeDate]="activeDate" />
+      <ee-month-view [activeDate]="activeDate" [events]="events()" />
     }
 
     @case ('week') {
-      <ee-week-view [activeDate]="activeDate" />
+      <ee-week-view [activeDate]="activeDate" [events]="events()" />
     }
 
     @case ('day') {
-      <ee-day-view [activeDate]="activeDate" />
+      <ee-day-view [activeDate]="activeDate" [events]="events()" />
     }
   }
 </div>
