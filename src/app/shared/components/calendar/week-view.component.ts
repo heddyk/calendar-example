@@ -10,45 +10,14 @@ import {
 } from '@angular/core'
 import { Event } from '@core/models/event'
 import { DateAdapterService } from '@core/services/date-adapter.service'
+import { GridRowEnd } from '@shared/pipes/grid-row-end.pipe'
+import { GridRowStart } from '@shared/pipes/grid-row-start.pipe'
 
 interface DayOfCalendar {
   date: Date
   weekday: { long: string; short: string; narrow: string }
   isToday?: boolean
   events: Event[]
-}
-
-@Pipe({
-  standalone: true,
-  name: 'gridRowStart',
-})
-export class GridRowStart implements PipeTransform {
-  transform(value: Event, ...args: any[]): number {
-    const hours = value.startAt.getHours()
-    const minutes = value.startAt.getMinutes()
-    const time = minutes / 60 + hours
-
-    return Math.floor(time * 12 + 2)
-  }
-}
-
-@Pipe({
-  standalone: true,
-  name: 'gridRowEnd',
-})
-export class GridRowEnd implements PipeTransform {
-  private readonly dateAdapterService = inject(DateAdapterService)
-  transform(value: Event, ...args: any[]): number {
-    if (!this.dateAdapterService.isSameDay(value.startAt, value.endAt)) {
-      return -1
-    }
-
-    const hours = value.endAt.getHours()
-    const minutes = value.endAt.getMinutes()
-    const time = minutes / 60 + hours
-
-    return Math.floor(time * 12 + 2)
-  }
 }
 
 @Component({
