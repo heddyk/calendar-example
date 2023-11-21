@@ -1,5 +1,13 @@
-import { DatePipe, NgClass } from '@angular/common'
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, inject } from '@angular/core'
+import { DatePipe, NgClass, NgStyle } from '@angular/common'
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  inject,
+  Pipe,
+  PipeTransform,
+} from '@angular/core'
 import { Event } from '@core/models/event'
 import { DateAdapterService } from '@core/services/date-adapter.service'
 
@@ -7,12 +15,46 @@ interface DayOfCalendar {
   date: Date
   weekday: { long: string; short: string; narrow: string }
   isToday?: boolean
+  events: Event[]
+}
+
+@Pipe({
+  standalone: true,
+  name: 'gridRowStart',
+})
+export class GridRowStart implements PipeTransform {
+  transform(value: Event, ...args: any[]): number {
+    const hours = value.startAt.getHours()
+    const minutes = value.startAt.getMinutes()
+    const time = minutes / 60 + hours
+
+    return Math.floor(time * 12 + 2)
+  }
+}
+
+@Pipe({
+  standalone: true,
+  name: 'gridRowEnd',
+})
+export class GridRowEnd implements PipeTransform {
+  private readonly dateAdapterService = inject(DateAdapterService)
+  transform(value: Event, ...args: any[]): number {
+    if (!this.dateAdapterService.isSameDay(value.startAt, value.endAt)) {
+      return -1
+    }
+
+    const hours = value.endAt.getHours()
+    const minutes = value.endAt.getMinutes()
+    const time = minutes / 60 + hours
+
+    return Math.floor(time * 12 + 2)
+  }
 }
 
 @Component({
   selector: 'ee-week-view',
   standalone: true,
-  imports: [NgClass, DatePipe],
+  imports: [NgClass, NgStyle, DatePipe, GridRowStart, GridRowEnd],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'isolate flex flex-auto flex-col overflow-auto bg-white',
@@ -44,13 +86,15 @@ export class WeekViewComponent {
   }
   set events(value: Event[]) {
     this._events = value
+    this._setEvents(value)
   }
-  private _events: Event[]
+  private _events: Event[] = []
 
   _days: DayOfCalendar[]
 
   _init() {
     this._createCalendar()
+    this._setEvents(this.events)
     this._changeDetectorRef.markForCheck()
   }
 
@@ -73,6 +117,14 @@ export class WeekViewComponent {
         short: new Intl.DateTimeFormat('pt-BR', { weekday: 'short', timeZone: 'utc' }).format(d),
       },
       isToday: this._dateAdapterService.isToday(d),
+      events: [],
+    }))
+  }
+
+  private _setEvents(events: Event[]) {
+    this._days = this._days.map((d) => ({
+      ...d,
+      events: events.filter((e) => this._dateAdapterService.isSameDay(d.date, e.startAt)),
     }))
   }
 }

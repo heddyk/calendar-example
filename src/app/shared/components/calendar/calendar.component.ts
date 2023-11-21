@@ -68,7 +68,7 @@ export class CalendarComponent implements AfterContentInit {
 
   ngAfterContentInit(): void {
     this.activeDate = this._dateAdapterService.today()
-    this.currentView = 'month'
+    this.currentView = 'week'
   }
 
   previous() {

@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core'
 import { Event } from '@core/models/event'
 import { EventsService } from '@core/services/events.service'
-import { take } from 'rxjs'
+import { map, take } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class EventsStore {
@@ -15,7 +15,16 @@ export class EventsStore {
 
     this._eventsService
       .getEventsByMonthAndYear(month, year)
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        map((events) => {
+          return events.map((e) => ({
+            ...e,
+            startAt: new Date(e.startAt),
+            endAt: new Date(e.endAt),
+          }))
+        }),
+      )
       .subscribe({
         next: (events) => {
           this.events.set(events)
@@ -32,7 +41,16 @@ export class EventsStore {
 
     this._eventsService
       .getEventsByYear(year)
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        map((events) => {
+          return events.map((e) => ({
+            ...e,
+            startAt: new Date(e.startAt),
+            endAt: new Date(e.endAt),
+          }))
+        }),
+      )
       .subscribe({
         next: (events) => {
           this.events.set(events)
